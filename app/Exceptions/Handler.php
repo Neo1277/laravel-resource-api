@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
+    use ExceptionTrait;
     /**
      * A list of the exception types that are not reported.
      *
@@ -40,24 +41,10 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-        /*
-        $this->renderable(function (Throwable $e) {
-            return response()->json("Model not found", 404);
-        });*/
+
         $this->renderable(function (NotFoundHttpException $e, $request) {
-            if ($request->is('api/*')) {
-              if ($e->getPrevious() instanceof ModelNotFoundException) {
-                  return response()->json([
-                      'status' => 404,
-                      'message' => 'Product Model not found'
-                  ], 200);
-              }
-              return response()->json([
-                  'status' => 404,
-                  'message' => 'Incorrect route'
-              ], 404);
-            }
-          });
+            return $this->apiException($request, $e);
+        });
     }
     
 }
