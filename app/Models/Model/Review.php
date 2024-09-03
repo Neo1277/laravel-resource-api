@@ -9,6 +9,10 @@ use App\Models\Model\Product;
 
 class Review extends Model
 {
+    protected $fillable = [
+        'customer', 'star', 'review'
+    ];
+    
     use HasFactory;
 
     public function product(){
